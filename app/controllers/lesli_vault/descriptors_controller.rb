@@ -32,6 +32,92 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class DescriptorsController < ApplicationController
-  end
+    class DescriptorsController < ApplicationController
+
+        before_action :set_descriptor, only: [:show, :update, :destroy]
+
+        # GET /descriptors/list.json
+        def list
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    respond_with_successful(DescriptorServices.new(current_user, @query).list)
+                end
+            end
+        end
+
+        # GET /descriptors
+        def index
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    respond_with_pagination(DescriptorServices.new(current_user, @query).index)
+                end
+            end
+        end
+
+        # GET /descriptors/:id
+        def show
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    return respond_with_successful(@descriptor.show)
+                end
+            end
+        end
+
+        # GET /descriptors/new
+        def new
+        end
+
+        # GET /descriptors/:id/edit
+        def edit
+        end
+
+        # POST /descriptors
+        def create
+            descriptor = DescriptorServices.new(current_user, @query).create(descriptor_params)
+            if descriptor.successful?
+                respond_with_successful(descriptor.result)
+            else
+                respond_with_error(descriptor.errors)
+            end
+        end
+
+        # PATCH/PUT /descriptors/:id
+        def update
+            @descriptor.update(descriptor_params)
+
+            if @descriptor.successful?
+                respond_with_successful(@descriptor.result)
+            else
+                respond_with_error(@descriptor.errors)
+            end
+        end
+
+        # DELETE /descriptors/1
+        def destroy
+            return respond_with_not_found unless @descriptor
+
+            if @descriptor.destroy
+                respond_with_successful
+            else
+                respond_with_error(@descriptor.errors.full_messages.to_sentence)
+            end
+        end
+
+        private
+
+        # Use callbacks to share common setup or constraints between actions.
+        def set_descriptor
+            @descriptor = DescriptorServices.new(current_user, @query).find(params[:id])
+            return respond_with_not_found unless @descriptor.found?
+        end
+
+        # Only allow a list of trusted parameters through.
+        def descriptor_params
+            params.require(:descriptor).permit(:id, :name)
+        end
+
+    end
 end

@@ -32,6 +32,17 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class Role::PrivilegesController < ApplicationController
-  end
+    class Role::PrivilegesController < ApplicationController
+        before_action :set_role_privilege, only: []
+
+        private
+
+        # Use callbacks to share common setup or constraints between actions.
+        def set_role_privilege
+        end
+
+        # Only allow a list of trusted parameters through.
+        def role_privilege_params
+        end
+    end
 end

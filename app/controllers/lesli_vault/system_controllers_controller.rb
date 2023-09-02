@@ -32,6 +32,35 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class SystemControllersController < ApplicationController
-  end
+    class SystemControllersController < ApplicationController
+
+        before_action :set_system_controller, only: [:show, :update, :destroy]
+
+        # GET /system_controllers
+        def index
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    respond_with_successful(SystemController.index(current_user, @query))
+                end
+            end
+        end
+
+        def options 
+            respond_to do |format|
+                format.html {}
+                format.json do
+                    respond_with_successful(SystemController.options(current_user, @query))
+                end
+            end
+        end 
+
+        private
+
+        # Only allow a list of trusted parameters through.
+        def system_controller_params
+            []
+        end
+
+    end
 end
