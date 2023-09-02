@@ -32,9 +32,9 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  module SystemController
-    def self.table_name_prefix
-      "lesli_vault_system_controller_"
+    class SystemController < ApplicationRecord
+
+        has_many :actions
+
     end
-  end
 end

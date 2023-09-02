@@ -32,6 +32,9 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class Descriptor::Privilege < ApplicationRecord
-  end
+    class Descriptor::Privilege < ApplicationRecord
+
+        belongs_to :descriptor
+
+    end
 end

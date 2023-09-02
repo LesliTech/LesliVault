@@ -30,10 +30,8 @@ Building a better future, one line of code at a time.
 // · 
 
 =end
+
 module LesliVault
-    class SystemController::Action < ApplicationRecord
-
-        belongs_to :system_controller
-
+    class RoleServices < LesliServices
     end
 end

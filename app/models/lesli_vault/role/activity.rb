@@ -32,6 +32,9 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class Role::Activity < ApplicationRecord
-  end
+    class Role::Activity < ApplicationRecord
+
+        belongs_to :role
+
+    end
 end

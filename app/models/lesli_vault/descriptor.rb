@@ -32,9 +32,10 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  module Descriptor
-    def self.table_name_prefix
-      "lesli_vault_descriptor_"
+    class Descriptor < ApplicationRecord
+
+        has_many :activities
+        has_many :privileges
+    
     end
-  end
 end

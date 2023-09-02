@@ -32,9 +32,8 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  module Role
-    def self.table_name_prefix
-      "lesli_vault_role_"
+    class Role < ApplicationRecord
+        
+
     end
-  end
 end
