@@ -1,5 +1,3 @@
-=begin
-
 Lesli
 
 Copyright (c) 2023, Lesli Technologies, S. A.
@@ -28,13 +26,3 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
-=end
-
-module LesliVault
-  module SystemController
-    def self.table_name_prefix
-      "lesli_vault_system_controller_"
-    end
-  end
-end

@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  # class ApplicationController < ActionController::Base
-  class ApplicationController < ApplicationLesliController
+  class ApplicationController < ActionController::Base
+#   class ApplicationController < ApplicationLesliController
   end
 end
