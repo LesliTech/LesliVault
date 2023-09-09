@@ -47,7 +47,8 @@ module LesliVault
         #    this.http.get(`127.0.0.1/house/roles`);
         def list
             respond_to do |format|
-                format.json { respond_with_successful(RoleServices.new(current_user).list()) }
+                format.html { }
+                format.json { respond_with_successful(RoleServices.new(current_user).list) }
             end
         end
 
@@ -82,7 +83,8 @@ module LesliVault
             respond_to do |format|
                 format.html {  }
                 format.json {
-                    return respond_with_not_found unless @role
+                    return respond_with_not_found unless @role.found?
+
                     respond_with_successful(@role.show)
                 }
             end
@@ -118,141 +120,67 @@ module LesliVault
         #     this.http.post('127.0.0.1/house/roles', data);
         def create
 
-            role = current_user.account.roles.new(role_params)
+            role = RoleServices.new(current_user)
+            role.create(role_params)
 
-            unless current_user.can_work_with_role?(role)
-                return respond_with_error(I18n.t("core.roles.messages_danger_creating_role_object_level_permission_too_high"))
+            unless role.successful?
+                respond_with_error(role.errors)
             end
 
-            # check if user can work with that object level permission
-            if role.object_level_permission.to_f >= current_user.roles.map(&:object_level_permission).max()
-                return respond_with_error(I18n.t("core.roles.messages_danger_creating_role_object_level_permission_too_high"))
-            end
-
-            if role.save
-                respond_with_successful(role)
-                Role::Activity.log_create(current_user, role)
-            else
-                respond_with_error(role.errors.full_messages.to_sentence)
-            end
+            respond_with_successful(role)
         end
 
         # @controller_action_param :name [String] The name of the role
         # @return [Json] Json that contains wheter the role was successfully updated or not.
         #     If it it not successful, it returns an error message
         # @description Updates an existing role associated to the *current_user*'s *account*.
-        # @example
-        #     # Executing this controller's action from javascript's frontend
-        #     let role_id = 4;
-        #     let data = {
-        #         role: {
-        #             name: "Issue"
-        #         }
-        #     };
-        #     this.http.patch(`127.0.0.1/roles/${role_id}`, data);
         def update
-
             # Respond with 404 if role was not found
             return respond_with_not_found unless @role.found?
 
-            role = @role.result
-
             # check if current user can work with role
-            unless current_user.can_work_with_role?(role)
+            unless current_user.can_work_with_role?(@role.resource)
                 return respond_with_error(I18n.t("core.roles.messages_danger_updating_role_object_level_permission_too_high"))
             end
 
-            old_attributes = role.attributes
+            # Update role information
+            @role.update(role_params)
 
-            if role.update(role_params)
-                new_attributes = role.attributes
-
-                respond_with_successful(role)
-
-                Role::Activity.log_update(current_user, role, old_attributes, new_attributes)
-            else
-                respond_with_error(role.errors.full_messages.to_sentence)
+            # check if the update went OK
+            unless @role.successful?
+                respond_with_error(@role.errors)
             end
+
+            respond_with_successful(@role)
         end
 
         # @return [Json] Json that contains wheter the role was successfully deleted or not.
         #     If it it not successful, it returns an error message
         # @description Deletes an existing *role* associated to the *current_user*'s *account*.
-        # @example
-        #     # Executing this controller's action from javascript's frontend
-        #     let role_id = 4;
-        #     this.http.delete(`127.0.0.1/roles/${role_id}`);
         def destroy
-            return respond_with_not_found unless @role
+            return respond_with_not_found unless @role.found?
 
-            return respond_with_error(I18n.t("core.roles.messages_danger_users_assigned_validation")) if @role.has_users?
-
-            if @role.destroy
-                respond_with_successful
-
-                Role::Activity.log_destroy(current_user, @role)
-            else
-                respond_with_error(@role.errors.full_messages.to_sentence)
+            # Validation: check if the role has still associated users
+            if @role.has_users?
+                return respond_with_error(I18n.t("core.roles.messages_danger_users_assigned_validation"))
             end
+
+            @role.destroy
+
+            # Check if the deletion was successful
+            unless @role.successful?
+                return respond_with_error(@role.errors.full_messages.to_sentence)
+            end
+
+            respond_with_successful
         end
 
+        # @return [JSON]
+        # @description Gets all the specific options for roles CRUD
         def options
-
-            levels = {}
-
-            # get all the different object level permission registered in the roles
-            existing_levels = current_user.account.roles
-            .select(:object_level_permission)
-            .order(object_level_permission: :desc)
-            .distinct
-            .map { |level| level.object_level_permission }
-
-            # Build the next available object levels
-            # basically we need to add the possibles object level permissions between the
-            # existing ones
-            existing_levels.each_with_index do |level_current, i|
-
-                level_next = 0
-
-                # get the next OLP in the list of the existing roles
-                level_next = existing_levels.to_a[i+1] unless existing_levels.to_a[i+1].nil?
-
-                # calculate the new next level, basically we get the level right in the middle
-                # between the existing levels, example:
-                #   1000    existing level
-                #    750    new projected level
-                #    500    existing level
-                level_new = (level_current + level_next) / 2
-
-                # add the levels to the levels object
-                levels[level_current] = []
-
-                next if level_next == 0
-
-                levels[level_new] = []
-
-            end
-
-            # Get all the existing roles
-            current_user.account.roles
-            .select(:id, :name, :object_level_permission)
-            .where.not(object_level_permission: nil).each do |role|
-                levels[role.object_level_permission] = [] if levels[role.object_level_permission].blank?
-                # push the role grouping by the object level permission
-                levels[role.object_level_permission].push(role)
-            end
-
-            levels_sorted = []
-
-            levels.keys.each do |key|
-                levels_sorted.push({
-                    level: key,
-                    roles: levels[key]
-                })
-            end
-
-            respond_with_successful({ :object_level_permissions => levels_sorted })
-
+            respond_with_successful({ 
+                :object_level_permissions => RoleServices.new(current_user).options
+            })
         end
 
         private
@@ -272,7 +200,7 @@ module LesliVault
         # @description Sanitizes the parameters received from an HTTP call to only allow the specified ones.
         #     Allowed params are detail_attributes: [:name, :active, :object_level_permission]
         # @example
-        #     # supose params contains {
+        #     # suppose params contains {
         #     #    "role": {
         #     #        "name": "Admin",
         #     #        "word": Hello
