@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-    class DescriptorServices < LesliServices
+    class DescriptorServices < LesliVault::ApplicationLesliServices
 
         def find id
             super(self.current_user.account.descriptors.find_by_id(id))
