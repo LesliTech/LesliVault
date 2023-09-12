@@ -60,7 +60,7 @@ module LesliVault
             respond_to do |format|
                 format.html {}
                 format.json do
-                    return respond_with_successful(@descriptor.show)
+                    respond_with_successful(@descriptor.show)
                 end
             end
         end
@@ -80,7 +80,7 @@ module LesliVault
 
             # Check if the creation went ok
             unless descriptor.successful?
-                respond_with_error(descriptor.errors)
+                return respond_with_error(descriptor.errors)
             end
 
             respond_with_successful(descriptor)
