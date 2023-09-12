@@ -34,7 +34,7 @@ Building a better future, one line of code at a time.
 module LesliVault
     class RolesController < ApplicationController
 
-        before_action :set_role, only: [:show, :update, :destroy]
+        before_action :set_role, only: %i[ show update destroy ]
 
 
         #@return [HTML|JSON] HTML view for listing all roles or a Json that contains a list of all roles
@@ -167,9 +167,9 @@ module LesliVault
 
             @role.destroy
 
-            # Check if the deletion was successful
+            # Check if the deletion went ok
             unless @role.successful?
-                return respond_with_error(@role.errors.full_messages.to_sentence)
+                return respond_with_error(@role.errors)
             end
 
             respond_with_successful
