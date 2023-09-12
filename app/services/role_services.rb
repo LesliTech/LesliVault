@@ -50,8 +50,8 @@ module LesliVault
         end
 
         # @overwrite
-        # @return [Array] Paginated index of users.
-        # @description Return a paginated array of users, used mostly in frontend views
+        # @return [Array] Paginated index of roles.
+        # @description Return a paginated array of roles, used mostly in frontend views
         def index 
 
             current_user.account.roles

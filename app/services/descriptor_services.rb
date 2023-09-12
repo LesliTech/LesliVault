@@ -34,15 +34,21 @@ Building a better future, one line of code at a time.
 module LesliVault
     class DescriptorServices < LesliVault::ApplicationLesliServices
 
+        # @overwrite
+        # @return {Object}
+        # @description Finds a descriptor according the ID given
         def find id
-            super(self.current_user.account.descriptors.find_by_id(id))
+            self.resource = self.current_user.account.descriptors.find_by_id(id)
+            self
         end
     
+        # @overwrite
+        # @return [Array] Paginated index of users.
+        # @description Return a paginated array of users, used mostly in frontend views
         def index
-    
-            descriptors = current_user.account.descriptors
-            .where.not(:name => ["owner"])
-            .select(
+            descriptors = current_user.account.descriptors.where.not(
+                :name => ["owner"]
+            ).select(
                 :id,
                 :name,
                 :category,
@@ -71,13 +77,15 @@ module LesliVault
             #     descriptors = descriptors.where("(LOWER(descriptors.name) SIMILAR TO ?)", search_string)
             # end
     
-            descriptors
-            .page(query[:pagination][:page])
-            .per(query[:pagination][:perPage])
-            .order("#{query[:order][:by]} #{query[:order][:dir]} NULLS LAST")
-    
+            descriptors.page(
+                query[:pagination][:page]
+            ).per(query[:pagination][:perPage]
+            ).order("#{query[:order][:by]} #{query[:order][:dir]} NULLS LAST")
         end 
     
+        # @overwrite
+        # @return {Hash}
+        # @description Retrives the descriptor with specific keys/attributes
         def show 
             { 
                 :id => resource.id,
@@ -92,8 +100,50 @@ module LesliVault
             }
         end
     
+        # @overwrite
+        # @return {Object}
+        # @param {params} Hash of the permitted attributes for a descriptor
+        # @description Creates a new descriptor
         def create params
-            super(self.current_user.account.descriptors.create(params))
+            descriptor = current_user.account.descriptors.new(params)
+
+            if descriptor.save
+                self.resource = descriptor
+                # TODO: keep track of the activities
+            else
+                self.error(descriptor.errors.full_messages.to_sentence)
+            end
+
+            self
+        end
+
+        # @overwrite
+        # @return {Object}
+        # @param {params} Hash of the permitted attributes for a descriptor
+        # @description Updates descriptor's attributes and saves logs if it went without problem
+        def update params
+
+            # TODO: keep track of the activities
+
+            unless self.resource.update(params)
+                self.error(self.resource.errors.full_messages.to_sentence)
+            end
+
+            self
+        end
+
+        # @overwrite
+        # @return {Object}
+        # @description Deletes the descriptor 
+        def destroy
+
+            # TODO: keep track of the activities
+
+            unless self.resource.destroy
+                self.error(self.resource.errors.full_messages.to_sentence)
+            end
+
+            self
         end
     
         # @return [void]
