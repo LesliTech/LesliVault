@@ -33,8 +33,7 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class DescriptorsController < ApplicationController
-
-        before_action :set_descriptor, only: [:show, :update, :destroy]
+        before_action :set_descriptor, only: %i[ show update destroy ]
 
         # GET /descriptors/list.json
         def list

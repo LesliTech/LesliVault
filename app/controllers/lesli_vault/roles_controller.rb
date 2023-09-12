@@ -34,7 +34,7 @@ Building a better future, one line of code at a time.
 module LesliVault
     class RolesController < ApplicationController
 
-        before_action :set_role, only: [:show, :update, :destroy]
+        before_action :set_role, only: %i[ show update destroy ]
 
 
         #@return [HTML|JSON] HTML view for listing all roles or a Json that contains a list of all roles
