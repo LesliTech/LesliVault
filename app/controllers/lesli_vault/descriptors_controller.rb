@@ -75,34 +75,43 @@ module LesliVault
 
         # POST /descriptors
         def create
-            descriptor = DescriptorServices.new(current_user, @query).create(descriptor_params)
-            if descriptor.successful?
-                respond_with_successful(descriptor.result)
-            else
+            descriptor = DescriptorServices.new(current_user, @query)
+            descriptor.create(descriptor_params)
+
+            # Check if the creation went ok
+            unless descriptor.successful?
                 respond_with_error(descriptor.errors)
             end
+
+            respond_with_successful(descriptor)
         end
 
         # PATCH/PUT /descriptors/:id
         def update
+            return respond_with_not_found unless @descriptor.found?
+
             @descriptor.update(descriptor_params)
 
-            if @descriptor.successful?
-                respond_with_successful(@descriptor.result)
-            else
-                respond_with_error(@descriptor.errors)
+            # Check if the update went ok
+            unless @descriptor.successful?
+                return respond_with_error(@descriptor.errors)
             end
+
+            respond_with_successful(@descriptor.result)
         end
 
         # DELETE /descriptors/1
         def destroy
-            return respond_with_not_found unless @descriptor
+            return respond_with_not_found unless @descriptor.found?
 
-            if @descriptor.destroy
-                respond_with_successful
-            else
-                respond_with_error(@descriptor.errors.full_messages.to_sentence)
+            @descriptor.destroy
+
+            # Check if the deletion went ok
+            unless @descriptor.successful?
+                return respond_with_error(@descriptor.errors)
             end
+
+            respond_with_successful
         end
 
         private
@@ -110,7 +119,6 @@ module LesliVault
         # Use callbacks to share common setup or constraints between actions.
         def set_descriptor
             @descriptor = DescriptorServices.new(current_user, @query).find(params[:id])
-            return respond_with_not_found unless @descriptor.found?
         end
 
         # Only allow a list of trusted parameters through.

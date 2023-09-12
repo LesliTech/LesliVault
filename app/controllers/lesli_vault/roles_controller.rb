@@ -167,9 +167,9 @@ module LesliVault
 
             @role.destroy
 
-            # Check if the deletion was successful
+            # Check if the deletion went ok
             unless @role.successful?
-                return respond_with_error(@role.errors.full_messages.to_sentence)
+                return respond_with_error(@role.errors)
             end
 
             respond_with_successful
