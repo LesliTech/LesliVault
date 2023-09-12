@@ -48,8 +48,8 @@ Gem::Specification.new do |spec|
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/LesliTech/Lesli"
-  spec.metadata["changelog_uri"] = "https://github.com/LesliTech/Lesli"
+  spec.metadata["source_code_uri"] = "https://github.com/LesliTech/LesliVault"
+  spec.metadata["changelog_uri"] = "https://github.com/LesliTech/LesliVault"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "Rakefile", "README.md"]
