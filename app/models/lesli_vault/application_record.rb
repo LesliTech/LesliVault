@@ -32,7 +32,8 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-  class ApplicationRecord < ApplicationLesliRecord
-    self.abstract_class = true
+  class ApplicationRecord < ActiveRecord::Base
+#   class ApplicationRecord < ApplicationLesliRecord
+    # self.abstract_class = true
   end
 end
