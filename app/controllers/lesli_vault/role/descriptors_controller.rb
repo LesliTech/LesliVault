@@ -33,8 +33,8 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class Role::DescriptorsController < ApplicationController
-        before_action :set_role, only: [:index, :show, :update, :create, :destroy]
-        before_action :set_role_descriptor, only: [:show, :update, :destroy]
+        before_action :set_role, only: %i[ index show update create destroy ]
+        before_action :set_role_descriptor, only: %i[ show update destroy ]
 
         def index 
             respond_with_successful(Role::Descriptor.index(current_user, @query, @role))

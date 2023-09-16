@@ -33,7 +33,7 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class Role::PrivilegesController < ApplicationController
-        before_action :set_role_privilege, only: []
+        before_action :set_role_privilege, only: %i[]
 
         private
 

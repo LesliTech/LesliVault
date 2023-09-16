@@ -33,8 +33,8 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class Descriptor::PrivilegesController < ApplicationController
-        before_action :set_descriptor, only: [:create, :destroy]
-        before_action :set_descriptor_privilege, only: [:destroy]
+        before_action :set_descriptor, only: %i[ create destroy ]
+        before_action :set_descriptor_privilege, only: %i[ destroy ]
 
 
         # GET /descriptor/privileges
