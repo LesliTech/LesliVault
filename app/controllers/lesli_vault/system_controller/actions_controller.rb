@@ -33,7 +33,7 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class SystemController::ActionsController < ApplicationController
-        before_action :set_system_controllers_action, only: [:show, :update, :destroy]
+        before_action :set_system_controllers_action, only: %i[ show update destroy ]
 
         # GET /system_controllers/actions
         def index
