@@ -33,7 +33,6 @@ Building a better future, one line of code at a time.
 
 module LesliVault
     class SystemControllersController < ApplicationController
-
         before_action :set_system_controller, only: %i[ show update destroy ]
 
         # GET /system_controllers
@@ -41,7 +40,7 @@ module LesliVault
             respond_to do |format|
                 format.html {}
                 format.json do
-                    respond_with_successful(SystemController.index(current_user, @query))
+                    respond_with_successful(SystemControllerServices.new(current_user).index)
                 end
             end
         end
@@ -50,7 +49,7 @@ module LesliVault
             respond_to do |format|
                 format.html {}
                 format.json do
-                    respond_with_successful(SystemController.options(current_user, @query))
+                    respond_with_successful(SystemControllerServices.new(current_user).options)
                 end
             end
         end 
@@ -61,6 +60,5 @@ module LesliVault
         def system_controller_params
             []
         end
-
     end
 end

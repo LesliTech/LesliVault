@@ -32,6 +32,7 @@ Building a better future, one line of code at a time.
 =end
 
 LesliVault::Engine.routes.draw do
+    root to: "dashboards#show"
 
     resources :roles do
         scope module: :role do
