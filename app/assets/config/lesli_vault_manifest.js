@@ -28,7 +28,11 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 */
 
-//= link_directory ../stylesheets/lesli_vault .css
+//= link_tree ../images/lesli_vault .png
+//= link_tree ../images/lesli_vault .jpg
+//= link_tree ../images/lesli_vault .svg
+
+//= link lesli_vault/application.css
+//= link lesli_vault/application.js
