@@ -39,8 +39,8 @@ Gem::Specification.new do |spec|
   spec.authors     = ["The Lesli Development Team"]
   spec.email       = ["hello@lesli.tech"]
   spec.homepage    = "https://www.lesli.dev/"
-  spec.summary     = "Security module for Lesli"
-  spec.description = "Lesli provides all the necessary tools to build your SaaS, empowering you and your team to focus on business and what makes your software special. "
+  spec.summary     = "Security management for The Lesli Framework"
+  spec.description = "Security management for The Lesli Framework"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
   # to allow pushing to a single host or delete this section to allow pushing to any host.
