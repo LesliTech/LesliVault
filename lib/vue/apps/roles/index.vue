@@ -18,16 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Your Smart Business Assistant. 
+Lesli · Ruby on Rails SaaS Development Framework.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
-@website  https://lesli.tech
+@website  https://www.lesli.tech
 @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
 */
 
@@ -35,7 +35,7 @@ Building a better future, one line of code at a time.
 
 // · import vue tools
 import { ref, reactive, onMounted, watch, computed, inject } from "vue"
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute } from "vue-router"
 
 
 // · import lesli stores
@@ -71,6 +71,7 @@ const columns = [{
 }, {
     field: "users",
     label: translations.core.roles.view_text_users || 'Users',
+    align: "center",
     sort: true
 }, {
     field: "isolated",
@@ -101,18 +102,17 @@ onMounted(() => {
 
 </script>
 <template>
-    <section class="application-component">
-        <lesli-header title="Roles & privileges">
+    <lesli-application-container>
+        <lesli-header title="Roles &amp; privileges">
             <lesli-button
                 outlined
                 icon="refresh"
                 :loading="storeRoles.loading"
-                @click="storeRoles.fetch()"
-            >
-                {{ translations.core.shared.view_text_btn_reload }}
+                @click="storeRoles.fetch()">
+                Reload
             </lesli-button>
             <lesli-button icon="add" :to="url.root(props.appMountPath+`/new`)">
-                {{ translations.core.roles.view_btn_new_role }}
+                Add role
             </lesli-button>
         </lesli-header>
         <lesli-toolbar @search="storeRoles.search"></lesli-toolbar>
@@ -120,10 +120,9 @@ onMounted(() => {
             :link="(role) => url.root(props.appMountPath+`/${role.id}`).s"
             :columns="columns"
             :records="storeRoles.records"
-            :pagination="storeRoles.index.pagination"
+            :pagination="storeRoles.pagination"
             @paginate="storeRoles.paginateIndex"
-            @sort="storeRoles.sortIndex"
-            >
+            @sort="storeRoles.sortIndex">
             <template #active="{ value }">
                 <span class="tag is-success is-light" v-if="value">active</span>
             </template>
@@ -164,5 +163,5 @@ onMounted(() => {
             </template>
 
         </lesli-table>
-    </section>
+    </lesli-application-container>
 </template>

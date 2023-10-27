@@ -1,3 +1,6 @@
+<%
+=begin
+
 Lesli
 
 Copyright (c) 2023, Lesli Technologies, S. A.
@@ -15,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Ruby on Rails SaaS Development Framework.
+Lesli · Ruby on Rails SaaS development platform.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
@@ -26,3 +29,9 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
+=end
+%>
+
+<%= navigation_item(lesli_vault.dashboard_path, "Dashboard", "ri-dashboard-3-line"); %>
+<%= navigation_item(lesli_vault.roles_path, "Roles", "ri-shield-user-line") %>
+<%= navigation_item(lesli_vault.descriptors_path, "Descriptors", "ri-shield-check-line") %>
