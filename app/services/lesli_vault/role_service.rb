@@ -32,44 +32,28 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-    class RoleServices < ApplicationLesliServices
+    class RoleService < Lesli::ApplicationLesliService
 
-        # @overwrite
-        # @return {Object}
-        # @description Finds a role according the ID given
-        def find id
-            self.resource = current_user.account.roles.find_by_id(id) 
-            self
-        end
 
-        # @overwrite
-        # @return {Object}
-        # @description Retrives the role
-        def show
-            self.resource
-        end
-
-        # @overwrite
-        # @return [Array] Paginated index of roles.
-        # @description Return a paginated array of roles, used mostly in frontend views
+        # @return [Array] Paginated index of users.
+        # @description Return a paginated array of users, used mostly in frontend views
         def index 
 
-            current_user.account.roles
-            .joins("
+            current_user.account.roles.where.not(
+                :name => ["owner"]
+            ).joins("
                 left join (
                     select
                         count(1) users,
                         role_id
-                    from user_roles
-                    inner join  users as u
-                        on u.id = user_roles.user_id
+                    from lesli_user_powers
+                    inner join lesli_users as u
+                        on u.id = lesli_user_powers.user_id
                         and u.deleted_at is null
-                    where user_roles.deleted_at is null
+                    where lesli_user_powers.deleted_at is null
                     group by (role_id)
-                )
-                users on users.role_id = roles.id
-            ")
-            .where("roles.object_level_permission < ?", current_user.max_object_level_permission)
+                ) users on users.role_id = lesli_roles.id
+            ").where("lesli_roles.object_level_permission <= ?", current_user.max_object_level_permission)
             .select(
                 :id, 
                 :name, 
@@ -85,15 +69,11 @@ module LesliVault
             .order(object_level_permission: :desc, name: :asc)
         end
 
-        # Return a list of roles that the user is able to work with
-        # according to object level permission
-        def list
-            current_user.account.roles.where(
-                "object_level_permission <= ?", current_user.max_object_level_permission
-            ).order(
-                object_level_permission: :desc, 
-                name: :asc
-            ).select(:id, :name, :object_level_permission)
+        # @overwrite
+        # @return {Object}
+        # @description Retrives the role
+        def show
+            self.resource
         end
 
         # @overwrite
@@ -213,6 +193,14 @@ module LesliVault
             end
 
             levels_sorted
+        end
+
+        # @overwrite
+        # @return {Object}
+        # @description Finds a role according the ID given
+        def find id
+            #self.resource = current_user.account.roles.find_by_id(id) 
+            #self
         end
     end
 end

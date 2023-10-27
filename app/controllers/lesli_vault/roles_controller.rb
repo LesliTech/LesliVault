@@ -34,23 +34,7 @@ Building a better future, one line of code at a time.
 module LesliVault
     class RolesController < ApplicationController
 
-        before_action :set_role, only: %i[ show update destroy ]
-
-
-        #@return [HTML|JSON] HTML view for listing all roles or a Json that contains a list of all roles
-        #    associated to this *account*
-        #@description Retrieves and returns all roles associated to a *CloudHouse::Account*. The account
-        #    is obtained directly from *current_user*. The HTTP request has to specify
-        #    wheter the HTML or the JSON text should be rendered
-        #@example
-        #    # Executing this controller's action from javascript's frontend
-        #    this.http.get(`127.0.0.1/house/roles`);
-        def list
-            respond_to do |format|
-                format.html { }
-                format.json { respond_with_successful(RoleServices.new(current_user).list) }
-            end
-        end
+        #before_action :set_role, only: %i[ show update destroy ]
 
         #@return [HTML|JSON] HTML view for listing all roles or a Json that contains a list of all roles
         #    associated to this *account*
@@ -64,7 +48,8 @@ module LesliVault
             respond_to do |format|
                 format.html { }
                 format.json {
-                    respond_with_pagination(RoleServices.new(current_user, @query).index)
+                    respond_with_successful(RoleService.new(current_user, query).index)
+                    #respond_with_pagination(RoleService.new(current_user, query).index)
                 }
             end
         end

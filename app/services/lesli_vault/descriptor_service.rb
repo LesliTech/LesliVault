@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 =end
 
 module LesliVault
-    class DescriptorServices < LesliVault::ApplicationLesliServices
+    class DescriptorService < Lesli::ApplicationLesliService
 
         # @overwrite
         # @return {Object}
@@ -46,14 +46,9 @@ module LesliVault
         # @return [Array] Paginated index of users.
         # @description Return a paginated array of users, used mostly in frontend views
         def index
+
             descriptors = current_user.account.descriptors.where.not(
                 :name => ["owner"]
-            ).select(
-                :id,
-                :name,
-                :category,
-                "coalesce(actions.total, 0) as privileges_count",
-                Date2.new.date_time.db_timestamps("descriptors")
             )
     
             # Count the amount of privileges assigned to every descriptor
@@ -62,12 +57,20 @@ module LesliVault
                     select
                         count(1) as total,
                         descriptor_id
-                    from descriptor_privileges
+                    from lesli_descriptor_privileges
                     --where apga.status = TRUE
                     group by descriptor_id
                 ) as actions
-                on actions.descriptor_id = descriptors.id
+                on actions.descriptor_id = lesli_descriptors.id
             ))
+
+            descriptors = descriptors.select(
+                :id,
+                :name,
+                :method,
+                "coalesce(actions.total, 0) as privileges_count",
+                Date2.new.date_time.db_timestamps("lesli_descriptors")
+            )
             
             # skip native descriptors
             #descriptors = descriptors.where.not("descriptors.name in (?)", ["owner", "sysadmin", "profile"])
@@ -77,10 +80,10 @@ module LesliVault
             #     descriptors = descriptors.where("(LOWER(descriptors.name) SIMILAR TO ?)", search_string)
             # end
     
-            descriptors.page(
-                query[:pagination][:page]
-            ).per(query[:pagination][:perPage]
-            ).order("#{query[:order][:by]} #{query[:order][:dir]} NULLS LAST")
+            return descriptors
+            .page(query[:pagination][:page])
+            .per(query[:pagination][:perPage])
+            .order("#{query[:order][:by]} #{query[:order][:dir]} NULLS LAST")
         end 
     
         # @overwrite

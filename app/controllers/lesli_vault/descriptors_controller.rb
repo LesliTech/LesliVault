@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Ruby on Rails SaaS development platform.
+Lesli · Ruby on Rails SaaS Development Framework.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
@@ -28,7 +28,6 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 =end
 
 module LesliVault
@@ -40,7 +39,7 @@ module LesliVault
             respond_to do |format|
                 format.html {}
                 format.json do
-                    respond_with_successful(DescriptorServices.new(current_user, @query).list)
+                    respond_with_successful(DescriptorService.new(current_user, query).list)
                 end
             end
         end
@@ -50,7 +49,8 @@ module LesliVault
             respond_to do |format|
                 format.html {}
                 format.json do
-                    respond_with_pagination(DescriptorServices.new(current_user, @query).index)
+                    #respond_with_successful(DescriptorService.new(current_user, query).index)
+                    respond_with_pagination(DescriptorService.new(current_user, query).index)
                 end
             end
         end
