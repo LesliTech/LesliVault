@@ -36,6 +36,9 @@ LesliVault::Engine.routes.draw do
     resource :dashboard, only: [:show]
 
     resources :roles do
+        collection do
+            get :options
+        end 
         scope module: :role do
             resources :privileges
             resources :descriptors

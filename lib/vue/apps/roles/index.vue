@@ -104,18 +104,18 @@ onMounted(() => {
 <template>
     <lesli-application-container>
         <lesli-header title="Roles &amp; privileges">
-            <lesli-button
-                outlined
-                icon="refresh"
+            <lesli-button icon="refresh"
                 :loading="storeRoles.loading"
                 @click="storeRoles.fetch()">
                 Reload
             </lesli-button>
-            <lesli-button icon="add" :to="url.root(props.appMountPath+`/new`)">
+            <lesli-link main icon="add" :to="url.vault('roles/new')">
                 Add role
-            </lesli-button>
+            </lesli-link>
         </lesli-header>
+
         <lesli-toolbar @search="storeRoles.search"></lesli-toolbar>
+
         <lesli-table
             :link="(role) => url.root(props.appMountPath+`/${role.id}`).s"
             :columns="columns"

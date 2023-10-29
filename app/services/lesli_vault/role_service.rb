@@ -81,6 +81,7 @@ module LesliVault
         # @param {params} Hash of the permitted attributes for a role
         # @description Creates a new role
         def create params
+
             role = current_user.account.roles.new(params)
 
             unless current_user.can_work_with_role?(role)
@@ -92,10 +93,13 @@ module LesliVault
                 self.error(I18n.t("core.roles.messages_danger_creating_role_object_level_permission_too_high"))
             end
 
+            # do not create if errors found
+            return self unless self.successful?
+
             # Try to save role and logs if it went OK
             if role.save
                 self.resource = role
-                Role::Activity.log_create(current_user, self.resource)
+                #Role::Activity.log_create(current_user, self.resource)
             else
                 self.error(role.errors.full_messages.to_sentence)
             end
@@ -138,7 +142,23 @@ module LesliVault
             self
         end
 
-        def options
+        # @overwrite
+        # @return {Object}
+        # @description Finds a role according the ID given
+        def find id
+            #self.resource = current_user.account.roles.find_by_id(id) 
+            #self
+        end
+
+        def options 
+            { 
+                :object_level_permissions => self.roles_with_object_level_permission
+            }
+        end 
+
+        private 
+
+        def roles_with_object_level_permission
             levels = {}
 
             # get all the different object level permission registered in the roles
@@ -193,14 +213,6 @@ module LesliVault
             end
 
             levels_sorted
-        end
-
-        # @overwrite
-        # @return {Object}
-        # @description Finds a role according the ID given
-        def find id
-            #self.resource = current_user.account.roles.find_by_id(id) 
-            #self
         end
     end
 end
