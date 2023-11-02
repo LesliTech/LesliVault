@@ -18,18 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Your Smart Business Assistant. 
+Lesli · Ruby on Rails SaaS Development Framework.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
-@website  https://lesli.tech
+@website  https://www.lesli.tech
 @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 */
 
 
@@ -38,12 +37,12 @@ Building a better future, one line of code at a time.
 import { inject, onMounted } from "vue"
 
 
-// · import lesli stores
-import { useDescriptor } from "../../../stores/descriptor"
-
-
 // · import vue router composable
 import { useRouter, useRoute } from "vue-router"
+
+
+// · import lesli stores
+import { useDescriptor } from "LesliVault/stores/descriptor"
 
 
 // · implement stores
@@ -73,21 +72,14 @@ const translations = {
         shared: I18n.t("core.shared"),
         role_descriptors: I18n.t('core.role_descriptors')
     }
-
 }
 
-/**
- * @description This function is used to update the descriptor information
- */
-const onUpdate = () => {
+function onUpdate() {
     storeDescriptor.updateDescriptor()
 }
 
-/**
- * @description This function is used to create a new descriptor
- */
-const onCreate = () => {
-    storeDescriptor.createDescriptor()
+function onCreate() {
+    storeDescriptor.postDescriptor()
 }
 
 onMounted(() => {
@@ -100,10 +92,7 @@ onMounted(() => {
 
 </script>
 <template>
-    <lesli-form 
-        class="information"
-        v-if="!storeDescriptor.loading"
-        @submit="isEditable ? onUpdate() : onCreate()">
+    <lesli-form @submit="isEditable ? onUpdate() : onCreate()">
 
         <div class="field">
             <label class="label">
@@ -111,7 +100,7 @@ onMounted(() => {
                 <sup class="has-text-danger">*</sup>
             </label>
             <div class="control">
-                <input name="name" v-model="storeDescriptor.descriptor.name" required="required" type="text" class="input"> 
+                <input name="name" v-model="storeDescriptor.descriptor.payload.name" required="required" type="text" class="input"> 
             </div>
         </div>
 
@@ -121,7 +110,7 @@ onMounted(() => {
             </label>
             <div class="control">
                 <lesli-select
-                    v-model="storeDescriptor.descriptor.descriptors_id"
+                    v-model="storeDescriptor.descriptor.payload.descriptors_id"
                     :options="storeDescriptor.descriptors_options">
                 </lesli-select>
             </div>
@@ -132,7 +121,7 @@ onMounted(() => {
                 {{ translations.core.role_descriptors.column_description }}
             </label>
             <div class="control">
-                <textarea class="textarea" v-model="storeDescriptor.descriptor.description"></textarea>
+                <textarea class="textarea" v-model="storeDescriptor.descriptor.payload.description"></textarea>
             </div>
         </div>
 

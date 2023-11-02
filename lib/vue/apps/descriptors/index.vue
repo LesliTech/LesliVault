@@ -94,15 +94,15 @@ onMounted(() => {
                 @click="storeDescriptors.getDescriptors()">
                 Reload
             </lesli-button>
-            <lesli-button icon="add" :to="url.admin(`descriptors/new`)">
+            <lesli-link main icon="add" :to="url.vault('descriptors/new')">
                 Add descriptor
-            </lesli-button>
+            </lesli-link>
         </lesli-header>
 
         <lesli-toolbar @search="storeDescriptors.search"></lesli-toolbar>
 
         <lesli-table
-            :link="(descriptor) => url.admin('descriptors/:id', descriptor.id)"
+            :link="(descriptor) => url.vault('descriptors/:id', descriptor.id)"
             :columns="columns"
             :loading="storeDescriptors.index.loading"
             :records="storeDescriptors.index.records"

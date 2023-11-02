@@ -46,7 +46,7 @@ LesliVault::Engine.routes.draw do
         end
     end
 
-    resources :descriptors do
+    resources :descriptors, only: [:index, :new, :create] do
         scope module: :descriptor do
             resources :privileges 
             resources :activities
