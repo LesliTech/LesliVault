@@ -77,17 +77,12 @@ onMounted(() => {
 // · 
 function submitRole() {
 
+    // role id exists, then just update the role
     if (storeRole.role.id) {
-        storeRole.putRole()
+        return storeRole.putRole()
     }
 
-    if (!storeRole.role.id) {
-        return storeRole.postRole().then(result => {
-            msg.success(translations.core.roles.messages_success_role_created_successfully)
-            router.push(url.admin("roles/:id/edit", result.id).s)
-        })
-    }
-
+    return storeRole.postRole()
 }
 
 
@@ -98,37 +93,49 @@ function isObjectLevelPermissionSelected(olp) {
 
 </script>
 <template>
-    <form @submit.prevent="submitRole" class="box">
+    <lesli-form @submit="submitRole">
 
         <!-- Role name -->
         <div class="field">
             <label class="label">
-                {{ translations.core.roles.column_name }}
+                Name
                 <sup class="has-text-danger">*</sup>
             </label>
             <div class="control">
-                <input v-model="storeRole.role.name" class="input" type="text" required />
+                <input v-model="storeRole.role.payload.name" class="input" type="text" required />
             </div>
         </div>
 
-        <!-- Default path -->
-        <div class="field">
-            <label class="label">{{ translations.core.roles.column_default_path }}</label>
-            <div class="control">
-                <input v-model="storeRole.role.default_path" class="input" type="text" :placeholder="translations.core.roles.view_placeholder_default_path_at_login">
-            </div>
-            <p class="help"> {{ translations.core.roles.view_text_default_path_description }}</p>
-        </div>
-
-        <!-- Limit to default path -->
+        <!-- Role Description -->
         <div class="field">
             <label class="label">
-                {{ translations.core.roles.column_limit_to_path }}
+                Description
+            </label>
+            <div class="control">
+                <input v-model="storeRole.role.payload.description" class="input" type="text" />
+            </div>
+        </div>
+
+        <!-- Role default path -->
+        <div class="field">
+            <label class="label">Default path</label>
+            <div class="control">
+                <input v-model="storeRole.role.payload.path_default" class="input" type="text" :placeholder="translations.core.roles.view_placeholder_default_path_at_login">
+            </div>
+            <p class="help">Default path to redirect after login.</p>
+        </div>
+
+        <hr />
+
+        <!-- Role limited to path -->
+        <div class="field">
+            <label class="label">
+                Limited?
             </label>
             <div class="control">
                 <div class="select">
                     <lesli-select 
-                        v-model="storeRole.role.limit_to_path"
+                        v-model="storeRole.role.payload.path_limited"
                         :options="[{
                             label: translations.core.roles.view_text_limit_to_path,
                             value: true
@@ -139,7 +146,52 @@ function isObjectLevelPermissionSelected(olp) {
                     </lesli-select>
                 </div>
             </div>
-            <p class="help"> {{ translations.core.roles.view_text_default_path_description }}</p>
+            <p class="help">Always redirect role to the default path</p>
+        </div>
+
+        <!-- Role is isolated -->
+        <div class="field">
+            <label class="label">
+                Isolated?
+                <sup class="has-text-danger">*</sup>
+            </label>
+            <div class="control">
+                <div class="select">
+                    <lesli-select 
+                        v-model="storeRole.role.payload.isolated"
+                        :options="[{
+                            label: translations.core.roles.view_text_restrict_data_access,
+                            value: true
+                        }, {
+                            label: translations.core.roles.view_text_allow_to_see_all_the_data,
+                            value: false
+                        }]">
+                    </lesli-select>
+                </div>
+            </div>
+            <p class="help">Force the role to query only the data that belongs to the current user</p>
+        </div>
+
+        <!-- Enable/disable role -->
+        <div class="field">
+            <label class="label">
+                Status
+                <sup class="has-text-danger">*</sup>
+            </label>
+            <div class="control">
+                <div class="select">
+                    <lesli-select 
+                        v-model="storeRole.role.payload.active"
+                        :options="[{
+                            label: translations.core.roles.view_text_active,
+                            value: true
+                        },{
+                            label: translations.core.roles.view_text_disabled,
+                            value: false
+                        }]">
+                    </lesli-select>
+                </div>
+            </div>
         </div>
 
         <hr>
@@ -147,13 +199,13 @@ function isObjectLevelPermissionSelected(olp) {
         <!-- Object level permission -->
         <div class="field">
             <label class="label">
-                {{ translations.core.roles.view_text_hierarchical_level }}
+                Hierarchical level
                 <sup class="has-text-danger">*</sup>
             </label>
             <ul class="hierarchical_level_selector">
                 <li :class="['hover', 'p-1', { 'has-background-info has-text-light' : isObjectLevelPermissionSelected(olp.level) }]"
                     v-for="(olp, index) in storeRole.options.object_level_permissions" :key="index"
-                    v-on:click="storeRole.role.object_level_permission = olp.level">
+                    v-on:click="storeRole.role.payload.object_level_permission = olp.level">
                     <p class="icon-text">
                         <span class="icon">
                             <span class="material-icons">
@@ -172,60 +224,12 @@ function isObjectLevelPermissionSelected(olp) {
 
         <hr>
 
-        <!-- Only own data -->
-        <div class="field">
-            <label class="label">
-                {{ translations.core.roles.column_only_my_data }}
-                <sup class="has-text-danger">*</sup>
-            </label>
-            <div class="control">
-                <div class="select">
-                    <lesli-select 
-                        v-model="storeRole.role.only_my_data"
-                        :options="[{
-                            label: translations.core.roles.view_text_restrict_data_access,
-                            value: true
-                        }, {
-                            label: translations.core.roles.view_text_allow_to_see_all_the_data,
-                            value: false
-                        }]">
-                    </lesli-select>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
-        <!-- Enable/disable role -->
-        <div class="field">
-            <label class="label">
-                {{ translations.core.roles.view_text_status }}
-                <sup class="has-text-danger">*</sup>
-            </label>
-            <div class="control">
-                <div class="select">
-                    <lesli-select 
-                        v-model="storeRole.role.active"
-                        :options="[{
-                            label: translations.core.roles.view_text_active,
-                            value: true
-                        },{
-                            label: translations.core.roles.view_text_disabled,
-                            value: false
-                        }]">
-                    </lesli-select>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
         <div class="field is-grouped">
             <div class="control">
-                <lesli-button icon="save">
-                    {{ translations.core.shared.view_btn_save }}
+                <lesli-button main icon="save" :loading="storeRole.role.loading">
+                    Save
                 </lesli-button>      
             </div>
         </div>
-    </form>
+    </lesli-form>
 </template>

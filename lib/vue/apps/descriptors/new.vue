@@ -18,35 +18,33 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Your Smart Business Assistant. 
+Lesli · Ruby on Rails SaaS Development Framework.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
 
 @contact  hello@lesli.tech
-@website  https://lesli.tech
+@website  https://www.lesli.tech
 @license  GPLv3 http://www.gnu.org/licenses/gpl-3.0.en.html
 
-// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
+// · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 */
 
 
 
 // · import vue tools
-import { onMounted } from "vue"
-import { useRouter, useRoute } from 'vue-router'
+import { onMounted, inject } from "vue"
+import { useRouter, useRoute } from "vue-router"
 
 
-// · import lesli stores
-import { useDescriptor } from "LesliApp/administration/stores/descriptor"
+// · 
+const url = inject("url")
+
 
 // · import components
-import descriptorForm from "./components/form.vue"
+import descriptorForm from "LesliVault/apps/descriptors/components/form.vue"
 
-// · implement stores
-const storeDescriptor = useDescriptor()
 
 // · translations
 const translations = {
@@ -57,20 +55,15 @@ const translations = {
     }
 
 }
-
-onMounted(() => {
-    //storeDescriptor.getDescriptorsOptions()
-})
-
 </script>
 
 <template>
-    <section class="application-component">
-        <lesli-header :title="translations.core.role_descriptors.view_btn_new_role_descriptors">
+    <lesli-application-container>
+        <lesli-header title="Create a new descriptor">
             <lesli-button icon="list" :to="url.admin('descriptors')">
                 {{ translations.core.view_btn_list }}
             </lesli-button>
         </lesli-header>
         <descriptor-form></descriptor-form>
-    </section>
+    </lesli-application-container>
 </template>

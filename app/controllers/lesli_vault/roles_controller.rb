@@ -105,14 +105,13 @@ module LesliVault
         #     this.http.post('127.0.0.1/house/roles', data);
         def create
 
-            role = RoleServices.new(current_user)
-            role.create(role_params)
+            role = RoleService.new(current_user).create(role_params)
 
-            unless role.successful?
-                respond_with_error(role.errors)
+            if role.successful?
+                respond_with_successful(role.result) 
+            else
+                respond_with_error(role.errors_as_sentence)
             end
-
-            respond_with_successful(role)
         end
 
         # @controller_action_param :name [String] The name of the role
@@ -163,9 +162,7 @@ module LesliVault
         # @return [JSON]
         # @description Gets all the specific options for roles CRUD
         def options
-            respond_with_successful({ 
-                :object_level_permissions => RoleServices.new(current_user).options
-            })
+            respond_with_successful(RoleService.new(current_user).options)
         end
 
         private

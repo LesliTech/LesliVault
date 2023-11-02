@@ -75,15 +75,14 @@ module LesliVault
 
         # POST /descriptors
         def create
-            descriptor = DescriptorServices.new(current_user, @query)
-            descriptor.create(descriptor_params)
+            descriptor = DescriptorService.new(current_user, query).create(descriptor_params)
 
             # Check if the creation went ok
-            unless descriptor.successful?
-                return respond_with_error(descriptor.errors)
+            if descriptor.successful?
+                respond_with_successful(descriptor)
+            else
+                respond_with_error(descriptor.errors)
             end
-
-            respond_with_successful(descriptor)
         end
 
         # PATCH/PUT /descriptors/:id

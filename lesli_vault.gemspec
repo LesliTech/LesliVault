@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 
-Lesli · Ruby on Rails SaaS development platform.
+Lesli · Ruby on Rails SaaS Development Framework.
 
 Made with ♥ by https://www.lesli.tech
 Building a better future, one line of code at a time.
@@ -28,33 +28,34 @@ Building a better future, one line of code at a time.
 
 // · ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~     ~·~
 // · 
-
 =end
 
 require_relative "lib/lesli_vault/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "lesli_vault"
-  spec.version     = LesliVault::VERSION
-  spec.authors     = ["The Lesli Development Team"]
-  spec.email       = ["hello@lesli.tech"]
-  spec.homepage    = "https://www.lesli.dev/"
-  spec.summary     = "Security management for The Lesli Framework"
-  spec.description = "Security management for The Lesli Framework"
+    spec.name        = "lesli_vault"
+    spec.version     = LesliVault::VERSION
+    spec.platform    = Gem::Platform::RUBY
+    spec.license     = "GPL-3.0"
+    spec.authors     = ["The Lesli Development Team"]
+    spec.email       = ["hello@lesli.tech"]
+    spec.homepage    = "https://www.lesli.dev/"
+    spec.summary     = "Security Management Module for the Lesli Framework."
+    spec.description = "Security Management Module for the Lesli Framework."
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+    # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
+    # to allow pushing to a single host or delete this section to allow pushing to any host.
+    # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/LesliTech/LesliVault"
-  spec.metadata["changelog_uri"] = "https://github.com/LesliTech/LesliVault"
+    spec.metadata["homepage_uri"] = spec.homepage
+    spec.metadata["changelog_uri"] = "https://github.com/LesliTech/LesliVault"
+    spec.metadata["source_code_uri"] = "https://github.com/LesliTech/LesliVault"
 
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["{app,config,db,lib}/**/*", "Rakefile", "README.md"]
-  end
+    spec.files = Dir.chdir(File.expand_path(__dir__)) do
+        Dir["{app,config,db,lib}/**/*", "license", "Rakefile", "readme.md"]
+    end
 
-  spec.required_ruby_version = ">= 2.7.2"
+    spec.required_ruby_version = ">= 2.7.2"
 
-  spec.add_dependency "rails", "~> 7"
+    spec.add_dependency "rails", "~> 7"
 end

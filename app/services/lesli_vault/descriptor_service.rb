@@ -147,54 +147,6 @@ module LesliVault
             end
 
             self
-        end
-    
-        # @return [void]
-        # @param role_descriptor [RoleDescriptor] The role_descriptor on wich we want to add the system actions
-        # @description Return the list of privilege actions defined for
-        # profile descriptor
-        # Example
-        # RoleDescriptor::DefaultPrivilegeActionsService.add_profile_actions(RoleDescriptor.last)
-        def self.add_profile_privileges(descriptor)
-    
-            # Adding default system actions for profile descriptor
-            [
-                { controller: "Profiles", actions: ["show"] }, # enable profile view
-                #{ controller: "profile/subscriptions", actions: ["options", "index"] }, # enable profile subscriptions
-                #{ controller: "user/sessions", actions: ["index"] }, # seession management
-                { controller: "Users", actions: ["options", "update"] } # enable user edition
-            ].each do |controller_action|
-    
-                controller_action[:actions].each do |action_name|
-    
-                    system_controller_action = SystemController::Action.joins(:system_controller)
-                    .where("system_controllers.reference = ?", controller_action[:controller])
-                    .where("system_controller_actions.name = ?", action_name).first
-    
-                    descriptor.privileges.find_or_create_by(
-                        system_controller_action: system_controller_action
-                    )
-                end
-            end
-        end
-    
-        # @return [void]
-        # @param role_descriptor [RoleDescriptor] The role_descriptor on wich we want to add the system actions
-        # @description Return the list of privilege actions defined for
-        # profile descriptor
-        # Example
-        # RoleDescriptor::DefaultPrivilegeActionsService.add_profile_actions(RoleDescriptor.last)
-        def self.add_owner_privileges(descriptor)
-    
-            # Adding default system actions for profile descriptor
-            actions = SystemController::Action.all
-    
-            actions.each do |action|
-                descriptor.privileges.find_or_create_by(
-                    system_controller_action: action
-                )
-            end
-        end
-        
+        end    
     end
 end
